@@ -4,6 +4,38 @@ pragma solidity ^0.4.0;
 import "./mint.sol";
 */
 
+/*
+Feedback Notes / Internal Audit:
+At least in one instance the contract violates the ERC20 specification (which maybe is not hugely problematic but if others depend on subtle behavior it could cause problems)
+For example, the transfer function does not conform to the specification
+
+“The function SHOULD throw if the _from account balance does not have enough tokens to spend.” (it only returns false if this is the case)
+
+https://github.com/dappmind/abee/commit/bcf2be3dd326e93401341cc2843e12a4d3ec6461#diff-dfe8db5d7487432c8bedfb091eac6bc1R119
+https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md#transfer
+
+GitHub
+
+Create distrib_by_owner_only · dappmind/XYZ@bcf2be3
+
+This is for distribution by owner only
+
+GitHub
+
+ethereum/EIPs
+
+EIPs - The Ethereum Improvement Proposal repository
+
+The contract does not conform to the specification in transferFrom either
+
+I would recommend that to look at the Vevue ERC20 contract and use the same structure as them
+
+https://github.com/vevue/ICOcontracts
+
+I didn’t find any vulnerability but feels safer to use a qrc20 implementation we know is correct
+I also recommend running comprehensive tests on the testnet before release
+*/
+
 contract TVLRToken {
     function balanceOf(address _owner) public constant returns (uint256);
     function transfer(address _to, uint256 _value) public returns (bool);
