@@ -1,5 +1,8 @@
 pragma solidity ^0.4.23;
 
+/*
+Note: edit to match vars in main SC file.
+*/
 import "./StandardToken.sol";
 import "../../ownership/Ownable.sol";
 
