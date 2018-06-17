@@ -5,7 +5,7 @@ import "./mint.sol";
 */
 
 /*
-Feedback Notes / Internal Audit:
+Feedback Notes / Internal Audit 1:
 At least in one instance the contract violates the ERC20 specification (which maybe is not hugely problematic but if others depend on subtle behavior it could cause problems)
 For example, the transfer function does not conform to the specification
 
@@ -34,6 +34,27 @@ https://github.com/vevue/ICOcontracts
 
 I didn’t find any vulnerability but feels safer to use a qrc20 implementation we know is correct
 I also recommend running comprehensive tests on the testnet before release
+*/
+
+/* Internal Audit 2:
+1. Line 84 - it would good to emit Transfer event to let explorers know that owner received total supply. 
+
+2. Line 100 - function distributeABEE - it doesn't use safe math, it might cause integer underflow which will mess up owner balance if this method tries to transfer more tokens that owner actually have. In general SafeMath code is there but it's not used anywhere.
+
+3. Line 114 - ERC20 short address attack mitigation is not required, it's better to leave this responsibility to client side apps, it was removed from Zeppelin Solidity: https://github.com/OpenZeppelin/openzeppelin-solidity/issues/261">https://github.com/OpenZeppelin/openzeppelin-solidity/issues/261
+
+4. Line 119 - transfer method - payload size is not required, SafeMath is not used.
+
+5. Line 133 - transferFrom - payload size is not required, SafeMath is not used.
+
+6. Line 159 - approve, race condition mitigation is not really necessary, it was removed from ZeppelinSolidity, there is warning only: https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/token/ERC20/StandardToken.sol#L45">https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/token/ERC20/StandardToken.sol#L45 
+
+General recommendations:
+1. Use openzeppelin solidity: https://github.com/OpenZeppelin/openzeppelin-solidity 
+
+2. Cover the contract with unit tests using truffle: https://github.com/trufflesuite/truffle 
+
+3. Do another internal audit
 */
 
 contract TVLRToken {
